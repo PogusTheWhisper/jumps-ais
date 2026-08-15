@@ -1,0 +1,732 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>THAItern</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#F0FDF9;
+  --surface:#FFFFFF;
+  --primary:#064E3B;
+  --accent:#059669;
+  --accent-dark:#047857;
+  --accent-2:#4F46E5;
+  --accent-2-dark:#3730A3;
+  --border:#6EE7B7;
+  --border-light:#A7F3D0;
+  --muted:#D1FAE5;
+  --fg:#022C22;
+  --fg-mid:#1F4037;
+  --fg-muted:#4B5563;
+  --shadow-clay:6px 6px 0 0 #059669;
+  --shadow-clay-light:6px 6px 0 0 #6EE7B7;
+  --shadow-clay-indigo:6px 6px 0 0 #818CF8;
+  --r:16px;
+  --r-sm:10px;
+}
+
+body{
+  font-family:'Noto Sans Thai',sans-serif;
+  background:var(--bg);
+  color:var(--fg);
+  min-height:100vh;
+  font-size:16px;
+  line-height:1.6;
+  background-image:
+    radial-gradient(ellipse 60% 40% at 15% 10%, #BBF7D055 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 85% 90%, #C7D2FE44 0%, transparent 60%);
+}
+
+/* Screens */
+.screen{display:none;min-height:100vh;flex-direction:column}
+.screen.active{display:flex;animation:up .28s ease}
+@keyframes up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* Topbar */
+.topbar{
+  background:var(--primary);
+  color:#fff;
+  padding:0 28px;
+  height:56px;
+  display:flex;align-items:center;gap:10px;
+  position:sticky;top:0;z-index:100;
+  border-bottom:3px solid var(--accent-dark);
+  flex-shrink:0;
+}
+.logo{font-weight:800;font-size:1.1rem;display:flex;align-items:center;gap:7px}
+.logo-dot{width:9px;height:9px;border-radius:50%;background:#10B981}
+.topbar-chip{
+  margin-left:auto;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.25);
+  border-radius:99px;padding:3px 13px;font-size:.78rem;font-weight:600
+}
+
+/* Layout */
+.content{flex:1;padding:28px 28px 100px;max-width:860px;margin:0 auto;width:100%}
+
+/* Footer nav — OUTSIDE content, sticky at bottom of screen */
+.footer-nav{
+  position:sticky;bottom:0;z-index:50;
+  background:rgba(240,253,249,.92);
+  backdrop-filter:blur(10px);
+  border-top:2px solid var(--border-light);
+  padding:14px 28px;
+  display:flex;justify-content:space-between;align-items:center;
+  flex-shrink:0;
+}
+
+/* Typography */
+h1{font-size:2.4rem;font-weight:800;line-height:1.15;color:var(--primary)}
+h2{font-size:1.35rem;font-weight:700;color:var(--primary)}
+h3{font-size:.95rem;font-weight:700;color:var(--fg)}
+.sub{color:var(--fg-muted);font-size:.875rem;margin-top:4px}
+
+/* Gradient text */
+.grad{
+  background:linear-gradient(135deg,var(--accent),var(--accent-2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text
+}
+
+/* Buttons */
+.btn{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:11px 22px;border-radius:var(--r-sm);
+  font-family:inherit;font-size:.9rem;font-weight:700;
+  border:2.5px solid transparent;cursor:pointer;
+  transition:transform 140ms ease,box-shadow 140ms ease,background 140ms;
+  text-decoration:none;white-space:nowrap;
+}
+.btn:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.btn:disabled{opacity:.45;pointer-events:none}
+
+.btn-primary{
+  background:var(--accent);color:#fff;
+  border-color:var(--accent-dark);
+  box-shadow:var(--shadow-clay);
+}
+.btn-primary:hover{transform:translate(-2px,-2px);box-shadow:8px 8px 0 0 var(--accent-dark)}
+.btn-primary:active{transform:translate(3px,3px);box-shadow:2px 2px 0 0 var(--accent-dark)}
+
+.btn-ghost{background:transparent;color:var(--fg-mid);border-color:var(--border-light)}
+.btn-ghost:hover{background:var(--muted);border-color:var(--border)}
+
+.btn-indigo{background:var(--accent-2);color:#fff;border-color:var(--accent-2-dark);box-shadow:var(--shadow-clay-indigo)}
+.btn-indigo:hover{transform:translate(-2px,-2px);box-shadow:8px 8px 0 0 var(--accent-2-dark)}
+
+/* Pills */
+.pill{
+  display:inline-flex;align-items:center;
+  padding:3px 11px;border-radius:99px;
+  font-size:.72rem;font-weight:700;
+  border:1.5px solid;width:fit-content;
+}
+.pill-green{background:#DCFCE7;color:#14532D;border-color:#86EFAC}
+.pill-indigo{background:#EEF2FF;color:#3730A3;border-color:#A5B4FC}
+.pill-amber{background:#FEF3C7;color:#78350F;border-color:#FCD34D}
+.pill-muted{background:#F3F4F6;color:#374151;border-color:#D1D5DB}
+
+/* Step bar */
+.steps{display:flex;align-items:center;gap:0;margin-bottom:28px}
+.step-item{display:flex;align-items:center;gap:7px;flex-shrink:0}
+.step-dot{
+  width:30px;height:30px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.75rem;font-weight:800;
+  border:2px solid #D1D5DB;background:#F3F4F6;color:#9CA3AF;
+  transition:all .2s;flex-shrink:0
+}
+.step-dot.active{background:var(--accent);color:#fff;border-color:var(--accent-dark);box-shadow:4px 4px 0 0 var(--accent-dark)}
+.step-dot.done{background:var(--primary);color:#fff;border-color:var(--accent-dark)}
+.step-label{font-size:.72rem;color:#9CA3AF;font-weight:600}
+.step-label.active{color:var(--primary);font-weight:800}
+.step-line{flex:1;height:2px;background:var(--border-light);margin:0 6px}
+
+/* Cards */
+.card{
+  background:var(--surface);border-radius:var(--r);padding:22px;
+  border:2.5px solid var(--border-light);box-shadow:var(--shadow-clay-light);
+  transition:transform .18s ease,box-shadow .18s ease,border-color .18s;
+}
+.card-sel{cursor:pointer}
+.card-sel:hover{border-color:var(--accent);transform:translate(-3px,-3px);box-shadow:var(--shadow-clay)}
+.card-sel:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.card-sel.selected{border-color:var(--accent);box-shadow:var(--shadow-clay);background:#F0FDF9}
+
+/* Entity grid — 2 columns */
+.entity-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+/* Entity card */
+.entity-card{display:flex;flex-direction:column;gap:10px;min-height:160px}
+.entity-head{display:flex;align-items:flex-start;gap:12px}
+.entity-ico{
+  width:48px;height:48px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.6rem;border:2px solid;flex-shrink:0;
+}
+.entity-body{flex:1}
+.entity-name{font-weight:700;font-size:.95rem;color:var(--fg);line-height:1.3}
+.entity-loc{font-size:.75rem;color:var(--fg-muted);margin-top:1px}
+.entity-desc{font-size:.8rem;color:var(--fg-muted);line-height:1.55;flex:1}
+
+/* Track cards */
+.track-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:560px}
+.track-card{
+  display:flex;flex-direction:column;gap:12px;
+  padding:24px 20px;text-align:left;
+}
+.track-ico{
+  width:52px;height:52px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.6rem;border:2px solid;box-shadow:4px 4px 0 0;
+}
+
+/* Progress */
+.prog-track{height:8px;background:var(--muted);border-radius:99px;overflow:hidden;border:1.5px solid var(--border-light)}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));border-radius:99px;transition:width .4s ease}
+
+/* Tabs */
+.tabs{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap}
+.tab-btn{
+  padding:9px 16px;border:2px solid var(--border-light);border-radius:var(--r-sm);
+  background:white;cursor:pointer;font-family:inherit;font-size:.82rem;font-weight:700;
+  color:var(--fg-muted);transition:all .15s;box-shadow:3px 3px 0 0 var(--border-light);
+}
+.tab-btn.active{background:var(--primary);color:#fff;border-color:var(--accent-dark);box-shadow:3px 3px 0 0 var(--accent-dark)}
+.tab-btn:hover:not(.active){border-color:var(--accent);color:var(--accent);box-shadow:3px 3px 0 0 #6EE7B7}
+.tab-pane{display:none}
+.tab-pane.active{display:block;animation:up .2s ease}
+
+/* Lesson rows */
+.lesson{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:var(--r-sm);border:2px solid transparent;cursor:pointer;transition:all .15s}
+.lesson:hover{background:var(--muted);border-color:var(--border-light)}
+.lesson-ico{
+  width:36px;height:36px;border-radius:9px;background:#F3F4F6;border:1.5px solid #E5E7EB;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.lesson-ico svg{width:16px;height:16px;stroke:#9CA3AF;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.lesson.done .lesson-ico{background:var(--muted);border-color:#6EE7B7}
+.lesson.done .lesson-ico svg{stroke:var(--accent)}
+
+/* Decision node */
+.node-wrap{border-radius:var(--r);border:2.5px solid var(--border-light);overflow:hidden;box-shadow:var(--shadow-clay-light);margin-bottom:20px}
+.node-header{
+  background:linear-gradient(135deg,var(--primary) 0%,#047857 100%);
+  color:#fff;padding:14px 20px;
+  display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
+}
+.node-body{padding:20px;background:white}
+.ctx-box{
+  background:#F0FDF9;border:1.5px solid #6EE7B7;border-radius:var(--r-sm);
+  padding:14px;font-size:.85rem;line-height:1.65;margin-bottom:18px;
+}
+.data-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.data-chip{background:#EEF2FF;color:#3730A3;border:1px solid #A5B4FC;border-radius:7px;padding:3px 9px;font-size:.75rem;font-weight:700}
+
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{
+  display:flex;align-items:center;gap:12px;padding:13px 16px;
+  border:2.5px solid var(--border-light);border-radius:var(--r-sm);background:white;
+  cursor:pointer;font-family:inherit;font-size:.875rem;font-weight:500;text-align:left;
+  color:var(--fg);transition:all .15s;box-shadow:3px 3px 0 0 var(--border-light);
+}
+.opt:hover{border-color:var(--accent);box-shadow:3px 3px 0 0 #6EE7B7;background:#F0FDF9}
+.opt.selected{border-color:var(--accent);background:#F0FDF9;box-shadow:3px 3px 0 0 var(--accent)}
+.opt-letter{
+  min-width:28px;height:28px;border-radius:50%;background:#F3F4F6;border:1.5px solid #D1D5DB;
+  display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;
+  flex-shrink:0;color:#374151;transition:all .15s;
+}
+.opt.selected .opt-letter{background:var(--accent);border-color:var(--accent-dark);color:#fff}
+
+/* Justify */
+.jlabel{font-size:.82rem;font-weight:700;color:var(--primary);margin-bottom:6px;display:block;margin-top:18px}
+.jtextarea{
+  width:100%;border:2px solid var(--border-light);border-radius:var(--r-sm);
+  padding:11px 14px;font-family:inherit;font-size:.875rem;
+  min-height:72px;resize:vertical;background:#F0FDF9;color:var(--fg);transition:border-color .2s;
+}
+.jtextarea:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px #05966920}
+.char-ct{font-size:.72rem;color:var(--fg-muted);text-align:right;margin-top:3px}
+
+/* Feedback panel */
+.fb-panel{display:none;border-radius:var(--r);overflow:hidden;border:2.5px solid var(--border-light);box-shadow:var(--shadow-clay-light)}
+.fb-panel.vis{display:block;animation:up .3s ease}
+.fb-row{display:flex;gap:12px;padding:13px 18px;border-bottom:1.5px solid #D1FAE5;font-size:.85rem;align-items:flex-start}
+.fb-row:last-child{border-bottom:none}
+.fb-lbl{min-width:100px;font-weight:700;flex-shrink:0;font-size:.8rem}
+.fb-next{background:#F0FDF9}
+.fb-next .fb-lbl{color:var(--accent)}
+
+/* Reflect */
+.reflect{
+  margin-top:18px;background:linear-gradient(135deg,#F0FDF9,#EEF2FF);
+  border:2.5px solid #6EE7B7;border-radius:var(--r);padding:18px;
+  box-shadow:var(--shadow-clay);
+}
+.reflect label{display:block;font-weight:700;color:var(--primary);margin-bottom:7px;font-size:.875rem}
+.reflect textarea{
+  width:100%;border:2px solid #6EE7B7;border-radius:var(--r-sm);
+  padding:11px 14px;font-family:inherit;font-size:.875rem;
+  min-height:60px;resize:none;background:white;color:var(--fg);transition:border-color .2s;
+}
+.reflect textarea:focus{border-color:var(--accent);outline:none}
+.reflect-note{font-size:.72rem;color:var(--fg-muted);margin-top:7px}
+
+/* Trace */
+.trace-wrap{border-radius:var(--r);overflow:hidden;border:2.5px solid var(--border-light);box-shadow:var(--shadow-clay)}
+.trace-head{background:linear-gradient(135deg,var(--primary),#047857);color:#fff;padding:18px 22px}
+.trace-disc{font-size:.78rem;opacity:.8;font-style:italic;line-height:1.55;margin-top:7px}
+.trace-row{padding:14px 22px;border-bottom:1.5px solid #D1FAE5;font-size:.875rem}
+.trace-row:last-child{border-bottom:none}
+.trace-lbl{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--fg-muted);font-weight:700;margin-bottom:3px}
+.trace-next{background:#F0FDF9}
+.trace-next .trace-lbl{color:var(--accent-dark)}
+.trace-foot{background:var(--muted);padding:10px 22px;font-size:.75rem;color:var(--fg-muted)}
+
+/* Hero badge */
+.hero-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:#D1FAE5;border:1.5px solid #6EE7B7;border-radius:99px;
+  padding:5px 15px;font-size:.78rem;font-weight:700;color:#065F46;
+  margin-bottom:18px;
+}
+
+/* Stat strip */
+.stat-strip{display:flex;gap:0;border:2.5px solid var(--border-light);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow-clay-light);margin-top:28px}
+.stat{flex:1;padding:16px 20px;background:white;border-right:1.5px solid var(--border-light)}
+.stat:last-child{border-right:none}
+.stat-num{font-size:1.6rem;font-weight:800;line-height:1}
+.stat-lbl{font-size:.72rem;color:var(--fg-muted);margin-top:3px}
+
+/* Util */
+.mt1{margin-top:6px}.mt2{margin-top:12px}.mt3{margin-top:20px}.mt4{margin-top:28px}.mt5{margin-top:40px}
+.fw7{font-weight:700}.fw8{font-weight:800}
+.row{display:flex;align-items:center}.row-sb{display:flex;align-items:center;justify-content:space-between}
+.gap1{gap:6px}.gap2{gap:12px}.gap3{gap:18px}
+.txt-sm{font-size:.875rem}.txt-xs{font-size:.78rem}.txt-muted{color:var(--fg-muted)}
+
+@media(max-width:600px){
+  .content{padding:18px 16px 90px}
+  .footer-nav{padding:12px 16px}
+  h1{font-size:1.8rem}
+  .entity-grid{grid-template-columns:1fr}
+  .track-grid{grid-template-columns:1fr}
+  .steps .step-label{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ S0: Welcome ═══════════════ -->
+<section id="s0" class="screen active">
+  <nav class="topbar">
+    <span class="logo"><span class="logo-dot"></span>THAItern</span>
+    <span class="topbar-chip">POC · G1</span>
+  </nav>
+  <div class="content">
+    <div class="hero-badge">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      AIS Submission · 2026
+    </div>
+    <h1>ฝึกคิด ฝึกทำ<br><span class="grad">กับธุรกิจไทยจริง</span></h1>
+    <p class="txt-sm txt-muted" style="margin-top:12px;max-width:480px;line-height:1.7">เลือก SME หรือชุมชน เรียนรู้จากเคสจริง แล้วลงมือทำ — ทุกการตัดสินใจบันทึกเป็น Decision Trace ไม่ใช่คะแนน</p>
+
+    <p class="fw7 mt4" style="color:var(--primary);margin-bottom:12px">เลือก track</p>
+    <div class="track-grid">
+      <div class="card card-sel track-card" tabindex="0" onclick="pickTrack('sme')" onkeydown="if(event.key==='Enter')pickTrack('sme')">
+        <div class="track-ico" style="background:#D1FAE5;border-color:#6EE7B7;box-shadow:4px 4px 0 0 #6EE7B7">🏪</div>
+        <div>
+          <div class="fw7">SME Track</div>
+          <p class="txt-sm txt-muted mt1">วิเคราะห์ปัญหาธุรกิจขนาดเล็ก</p>
+        </div>
+        <span class="pill pill-green" style="margin-top:auto">ธุรกิจ / บริหาร</span>
+      </div>
+      <div class="card card-sel track-card" tabindex="0" onclick="pickTrack('community')" onkeydown="if(event.key==='Enter')pickTrack('community')">
+        <div class="track-ico" style="background:#EEF2FF;border-color:#A5B4FC;box-shadow:4px 4px 0 0 #A5B4FC">🏘️</div>
+        <div>
+          <div class="fw7">Community Track</div>
+          <p class="txt-sm txt-muted mt1">พัฒนาชุมชนและพื้นที่ท้องถิ่น</p>
+        </div>
+        <span class="pill pill-indigo" style="margin-top:auto">ศิลปะ / สังคม</span>
+      </div>
+    </div>
+
+    <div class="stat-strip">
+      <div class="stat"><div class="stat-num" style="color:var(--accent)">7</div><div class="stat-lbl">Stages</div></div>
+      <div class="stat"><div class="stat-num" style="color:var(--accent-2)">3</div><div class="stat-lbl">Learning modules</div></div>
+      <div class="stat"><div class="stat-num" style="color:var(--primary)">0</div><div class="stat-lbl">Scores (by design)</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ S1: Entity Selection ═══════════════ -->
+<section id="s1" class="screen">
+  <nav class="topbar">
+    <span class="logo"><span class="logo-dot"></span>THAItern</span>
+    <span class="topbar-chip" id="s1-chip">SME Track</span>
+  </nav>
+  <div class="content">
+    <div class="steps">
+      <div class="step-item"><div class="step-dot active" id="sd1">1</div><span class="step-label active" id="sl1">เลือก SME</span></div>
+      <div class="step-line"></div>
+      <div class="step-item"><div class="step-dot">2</div><span class="step-label">เรียนรู้</span></div>
+      <div class="step-line"></div>
+      <div class="step-item"><div class="step-dot">3</div><span class="step-label">ลงมือทำ</span></div>
+      <div class="step-line"></div>
+      <div class="step-item"><div class="step-dot">4</div><span class="step-label">Trace</span></div>
+    </div>
+    <h2 id="s1-title">เลือก SME ที่อยากช่วย</h2>
+    <p class="sub" id="s1-sub">อ่านข้อมูลเบื้องต้น แล้วเลือก 1 แห่ง — ยังไม่บอกปัญหา</p>
+    <div class="entity-grid mt4" id="entity-grid"></div>
+  </div>
+  <div class="footer-nav">
+    <button type="button" class="btn btn-ghost" onclick="goTo('s0')">← ย้อนกลับ</button>
+    <button type="button" class="btn btn-primary" id="s1-next" disabled onclick="goTo('s2')">ถัดไป →</button>
+  </div>
+</section>
+
+<!-- ═══════════════ S2: Learning ═══════════════ -->
+<section id="s2" class="screen">
+  <nav class="topbar">
+    <span class="logo"><span class="logo-dot"></span>THAItern</span>
+    <span class="topbar-chip">ขั้นที่ 2 · เรียนรู้</span>
+  </nav>
+  <div class="content">
+    <div class="steps">
+      <div class="step-item"><div class="step-dot done">✓</div><span class="step-label">เลือก</span></div>
+      <div class="step-line"></div>
+      <div class="step-item"><div class="step-dot active">2</div><span class="step-label active">เรียนรู้</span></div>
+      <div class="step-line"></div>
+      <div class="step-item"><div class="step-dot">3</div><span class="step-label">ลงมือทำ</span></div>
+      <div class="step-line"></div>
+      <div class="step-item"><div class="step-dot">4</div><span class="step-label">Trace</span></div>
+    </div>
+
+    <div class="card" style="padding:18px;display:flex;gap:14px;align-items:center">
+      <div id="s2-ico" style="width:48px;height:48px;border-radius:12px;border:2px solid;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0"></div>
+      <div style="flex:1">
+        <div class="fw7" id="s2-name">—</div>
+        <div class="txt-xs txt-muted">Stage 1 of 7</div>
+        <div class="prog-track" style="margin-top:7px"><div class="prog-fill" id="prog" style="width:33%"></div></div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div class="fw8" style="color:var(--accent)" id="prog-lbl">1/3</div>
+        <div class="txt-xs txt-muted">เสร็จ</div>
+      </div>
+    </div>
+
+    <div class="tabs mt4">
+      <button type="button" class="tab-btn active" onclick="tab('textbook',this)">📖 Textbook</button>
+      <button type="button" class="tab-btn" onclick="tab('cases',this)">🗂 Cases</button>
+      <button type="button" class="tab-btn" onclick="tab('session',this)">🎥 Special Session</button>
+    </div>
+
+    <div id="tab-textbook" class="tab-pane active">
+      <div class="lesson done" onclick="markLesson(this)">
+        <div class="lesson-ico"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div style="flex:1"><div class="fw7 txt-sm">บทที่ 1 · โครงสร้างธุรกิจ SME</div><div class="txt-xs txt-muted">Fixed vs Variable cost · 8 นาที</div></div>
+        <span class="pill pill-green">เสร็จ</span>
+      </div>
+      <div class="lesson mt1" onclick="markLesson(this)">
+        <div class="lesson-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+        <div style="flex:1"><div class="fw7 txt-sm">บทที่ 2 · วิเคราะห์ P&amp;L</div><div class="txt-xs txt-muted">อ่านงบกำไรขาดทุน · 10 นาที</div></div>
+        <span class="pill pill-muted">ยังไม่เรียน</span>
+      </div>
+      <div class="lesson mt1" onclick="markLesson(this)">
+        <div class="lesson-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+        <div style="flex:1"><div class="fw7 txt-sm">บทที่ 3 · ลำดับความสำคัญข้อมูล</div><div class="txt-xs txt-muted">เลือกข้อมูลภายใต้ข้อจำกัด · 7 นาที</div></div>
+        <span class="pill pill-muted">ยังไม่เรียน</span>
+      </div>
+    </div>
+
+    <div id="tab-cases" class="tab-pane">
+      <div class="card mt2" style="padding:16px;display:flex;gap:12px">
+        <span style="font-size:1.8rem">🧃</span>
+        <div>
+          <div class="fw7 txt-sm">เคส: ร้านน้ำผลไม้ปั่น อ.เมือง</div>
+          <p class="txt-xs txt-muted mt1" style="line-height:1.6">รายได้ลดลง 30% หลังห้างเปิดสาขาใกล้เคียง — ลดราคา เปลี่ยนเมนู หรือย้ายทำเล?</p>
+          <div class="row gap1 mt2"><span class="pill pill-green">ค้าปลีก</span><span class="pill pill-muted">Stage 2</span></div>
+        </div>
+      </div>
+      <div class="card mt2" style="padding:16px;display:flex;gap:12px;opacity:.4">
+        <span style="font-size:1.8rem">🔒</span>
+        <div><div class="fw7 txt-sm">เคส: ร้านอาหารอีสาน</div><p class="txt-xs txt-muted mt1">ปลดล็อคเมื่อผ่าน Stage 2</p></div>
+      </div>
+    </div>
+
+    <div id="tab-session" class="tab-pane">
+      <div class="card mt2" style="padding:18px">
+        <div style="aspect-ratio:16/9;background:linear-gradient(135deg,var(--primary),#047857);border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;color:#fff;gap:8px;cursor:pointer;margin-bottom:14px" role="button" tabindex="0">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="rgba(255,255,255,.9)"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          <span class="txt-sm">เล่นวิดีโอ</span>
+        </div>
+        <div class="fw7 txt-sm">คุณสมศรี วานิชกร · ที่ปรึกษา SME 15 ปี</div>
+        <p class="txt-xs txt-muted mt1">"สิ่งที่เจ้าของ SME มักพลาดคือการไม่รู้ต้นทุนที่แท้จริง..."</p>
+        <div class="row gap1 mt2"><span class="pill pill-amber">วิดีโอจากมนุษย์จริง</span><span class="pill pill-muted">ไม่ใช่ AI</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-nav">
+    <button type="button" class="btn btn-ghost" onclick="goTo('s1')">← ย้อนกลับ</button>
+    <button type="button" class="btn btn-primary" onclick="goTo('s3')">เข้าสู่ Case →</button>
+  </div>
+</section>
+
+<!-- ═══════════════ S3: Decision Node ═══════════════ -->
+<section id="s3" class="screen">
+  <nav class="topbar">
+    <span class="logo"><span class="logo-dot"></span>THAItern</span>
+    <span class="topbar-chip">Stage 1 · Solo · Node 1/2</span>
+  </nav>
+  <div class="content">
+    <div class="steps">
+      <div class="step-item"><div class="step-dot done">✓</div><span class="step-label">เลือก</span></div>
+      <div class="step-line"></div>
+      <div class="step-item"><div class="step-dot done">✓</div><span class="step-label">เรียนรู้</span></div>
+      <div class="step-line"></div>
+      <div class="step-item"><div class="step-dot active">3</div><span class="step-label active">ลงมือทำ</span></div>
+      <div class="step-line"></div>
+      <div class="step-item"><div class="step-dot">4</div><span class="step-label">Trace</span></div>
+    </div>
+
+    <div class="node-wrap">
+      <div class="node-header">
+        <div>
+          <span class="pill pill-green" style="font-size:.68rem">Node 1 · โครงสร้างปัญหา</span>
+          <div class="fw7 mt1" style="font-size:1rem">คุณจะจำแนกปัญหาด้วยกรอบแนวคิดใด?</div>
+        </div>
+        <span class="txt-xs" style="opacity:.7;white-space:nowrap">~150 วินาที</span>
+      </div>
+      <div class="node-body">
+        <div class="ctx-box">
+          <strong>สถานการณ์:</strong> ร้านกาแฟ "อาทิตย์" ลาดพร้าว รายได้ 180,000 ฿/เดือน กำไรเหลือ 8,000 ฿
+          <div class="data-row">
+            <span class="data-chip">วัตถุดิบ 72,000 ฿</span>
+            <span class="data-chip">เงินเดือน 45,000 ฿</span>
+            <span class="data-chip">ค่าเช่า 38,000 ฿</span>
+            <span class="data-chip">ไฟ/น้ำ 17,000 ฿</span>
+          </div>
+        </div>
+        <div class="opts">
+          <button type="button" class="opt" onclick="pickOpt(this,'A')"><span class="opt-letter">A</span>แยกต้นทุนคงที่ (Fixed) vs ต้นทุนผันแปร (Variable)</button>
+          <button type="button" class="opt" onclick="pickOpt(this,'B')"><span class="opt-letter">B</span>รวมรายได้ vs ค่าใช้จ่ายทั้งหมดเป็นกลุ่มเดียว</button>
+          <button type="button" class="opt" onclick="pickOpt(this,'C')"><span class="opt-letter">C</span>เปรียบเทียบกับรายได้เดือนเดียวกันปีที่แล้ว</button>
+          <button type="button" class="opt" onclick="pickOpt(this,'D')"><span class="opt-letter">D</span>คำนวณต้นทุนต่อแก้วแล้วหา Breakeven</button>
+        </div>
+        <label class="jlabel" for="just">เหตุผลของคุณ <span style="font-weight:400;opacity:.6">(ไม่บังคับ · สูงสุด 200 ตัวอักษร)</span></label>
+        <textarea id="just" class="jtextarea" placeholder="เพราะ..." maxlength="200" oninput="upChar()"></textarea>
+        <div class="char-ct" id="char-ct">0 / 200</div>
+      </div>
+    </div>
+
+    <div class="fb-panel" id="fb">
+      <div class="fb-row" style="background:white"><span class="fb-lbl">📊 ผลธุรกิจ</span><span class="txt-sm">Fixed/Variable เผยว่าค่าเช่า + เงินเดือน = 83,000 ฿ คือต้นทุนคงที่ที่กินกำไร 46% ของรายได้</span></div>
+      <div class="fb-row" style="background:white"><span class="fb-lbl">🔍 ผู้เชี่ยวชาญ</span><span class="txt-sm">นักวิเคราะห์มักเริ่ม Fixed/Variable เพื่อหา Breakeven — ตัวเลือก D ถูกแต่ต้องการข้อมูลเพิ่ม</span></div>
+      <div class="fb-row fb-next"><span class="fb-lbl">⏭ ครั้งหน้า</span><span class="txt-sm">ใช้ Fixed/Variable ก่อนเสมอ แล้วค่อยคำนวณ Breakeven</span></div>
+    </div>
+
+    <div class="reflect" id="reflect" style="display:none">
+      <label for="reflect-txt">ครั้งหน้าฉันจะ… <span style="font-weight:400;opacity:.6">สูงสุด 120 ตัวอักษร · เขียนเอง AI ไม่ช่วย</span></label>
+      <textarea id="reflect-txt" placeholder="ครั้งหน้าฉันจะ..." maxlength="120"></textarea>
+      <div class="reflect-note">⚠️ ช่องนี้ไม่มี AI — ความคิดนี้เป็นของคุณ (P-C3)</div>
+    </div>
+  </div>
+  <div class="footer-nav">
+    <button type="button" class="btn btn-ghost" onclick="goTo('s2')">← ย้อนกลับ</button>
+    <button type="button" class="btn btn-primary" id="s3-btn" disabled onclick="submit3()">ส่งคำตอบ →</button>
+  </div>
+</section>
+
+<!-- ═══════════════ S4: Trace ═══════════════ -->
+<section id="s4" class="screen">
+  <nav class="topbar">
+    <span class="logo"><span class="logo-dot"></span>THAItern</span>
+    <span class="topbar-chip">Decision Trace</span>
+  </nav>
+  <div class="content">
+    <div class="steps">
+      <div class="step-item"><div class="step-dot done">✓</div><span class="step-label">เลือก</span></div>
+      <div class="step-line"></div>
+      <div class="step-item"><div class="step-dot done">✓</div><span class="step-label">เรียนรู้</span></div>
+      <div class="step-line"></div>
+      <div class="step-item"><div class="step-dot done">✓</div><span class="step-label">ลงมือทำ</span></div>
+      <div class="step-line"></div>
+      <div class="step-item"><div class="step-dot active">4</div><span class="step-label active">Trace</span></div>
+    </div>
+
+    <div class="row-sb" style="flex-wrap:wrap;gap:10px">
+      <div><h2>Decision Trace</h2><p class="sub">บันทึกสิ่งที่คุณทำ — ไม่มีคะแนน</p></div>
+      <button type="button" class="btn btn-ghost" style="font-size:.8rem" onclick="alert('Demo — share link จะมีอายุ 14 วัน')">แชร์ Trace →</button>
+    </div>
+
+    <div class="trace-wrap mt3">
+      <div class="trace-head">
+        <div class="fw7">THAItern · Decision Trace</div>
+        <div class="txt-xs" style="opacity:.75;margin-top:3px" id="t-meta">—</div>
+        <div class="trace-disc">"บันทึกนี้ไม่ระบุว่าคุณทำงานได้ดีแค่ไหน — แต่บันทึกว่าเมื่อเจอสถานการณ์เหล่านี้ คุณคิดอย่างไร ตัดสินใจอย่างไร และปรับตัวอย่างไร อ่านแล้วตัดสินเอง"</div>
+      </div>
+      <div class="trace-row"><div class="trace-lbl">สถานการณ์</div><div>ร้านกาแฟรายได้ 180,000 ฿/เดือน กำไรเหลือ 8,000 ฿ — เลือกกรอบการวิเคราะห์</div></div>
+      <div class="trace-row"><div class="trace-lbl">ตัวเลือกที่เลือก</div><div id="t-choice">—</div></div>
+      <div class="trace-row"><div class="trace-lbl">เหตุผลที่ให้</div><div id="t-just">—</div></div>
+      <div class="trace-row"><div class="trace-lbl">Feedback จากผู้เชี่ยวชาญ</div><div>Fixed/Variable เผยต้นทุนคงที่ 83,000 ฿/เดือน — ชี้สาเหตุกำไรบาง</div></div>
+      <div class="trace-row trace-next"><div class="trace-lbl">ครั้งหน้าฉันจะ…</div><div id="t-reflect">—</div></div>
+      <div class="trace-foot">⚠️ ไม่มีคะแนน · ไม่มี percentile · Stage 1/7 · ยังไม่สรุปจาก unit เดียว</div>
+    </div>
+
+    <div class="card mt3">
+      <h3>ขั้นต่อไป</h3>
+      <p class="txt-sm txt-muted mt1">ผ่าน Stage 1 ได้ 1 ครั้ง — ต้องผ่านอีก 1 ครั้งใน<strong>อุตสาหกรรมที่ต่างกัน</strong> จึงไป Stage 2</p>
+      <div class="row gap2 mt3" style="flex-wrap:wrap">
+        <button type="button" class="btn btn-primary" onclick="alert('Demo — โหลด case จากอุตสาหกรรมอื่น')">เล่น Case ถัดไป</button>
+        <button type="button" class="btn btn-ghost" onclick="goTo('s0')">← เริ่มใหม่</button>
+      </div>
+    </div>
+  </div>
+  <div class="footer-nav">
+    <span class="txt-xs txt-muted">Trust Gate G1 · Internal · 2026-08-14</span>
+  </div>
+</section>
+
+<script>
+const ST = {track:'sme', entity:null, opt:null, just:'', reflect:''};
+
+const DATA = {
+  sme:[
+    {id:'cafe',   e:'☕', n:'ร้านกาแฟอาทิตย์',      t:'ค้าปลีก', l:'ลาดพร้าว กทม.',  bg:'#FEF3C7',bc:'#FCD34D',bs:'#FCD34D', d:'ร้านกาแฟขนาดเล็ก เปิด 3 ปี พนักงาน 4 คน เมนูหลักกาแฟและเครื่องดื่มไทย'},
+    {id:'milk',   e:'🥛', n:'แน่งน้อยนมสด',         t:'อาหาร',   l:'เชียงใหม่',       bg:'#DBEAFE',bc:'#93C5FD',bs:'#93C5FD', d:'ร้านนมสดและนมปั่น ขายหน้าโรงเรียน สาขา 2 แห่ง รายได้หลักช่วงเช้า/บ่าย'},
+    {id:'tailor', e:'👔', n:'ช่างตัดเสื้อเพชรบุรี', t:'บริการ',  l:'เพชรบุรี',        bg:'#F3E8FF',bc:'#D8B4FE',bs:'#D8B4FE', d:'ร้านตัดเสื้อครอบครัว เปิด 20+ ปี ลูกค้าประจำมาก ยอดชะลอ 2 ปีหลัง'},
+    {id:'herb',   e:'🌿', n:'สมุนไพรป้าแดง',        t:'สุขภาพ',  l:'ขอนแก่น',         bg:'#DCFCE7',bc:'#86EFAC',bs:'#86EFAC', d:'ผลิตและขายสมุนไพรแปรรูป ทั้งหน้าร้านและออนไลน์ พนักงาน 6 คน'},
+  ],
+  community:[
+    {id:'mkt',    e:'🏮', n:'ตลาดเก่าบางลำพู',      t:'ประวัติศาสตร์', l:'กรุงเทพฯ',   bg:'#FEF3C7',bc:'#FCD34D',bs:'#FCD34D', d:'ตลาดเก่าอายุ 100+ ปี ร้านค้าเก่าแก่และวัฒนธรรมท้องถิ่น'},
+    {id:'vlg',    e:'🏡', n:'หมู่บ้านทอผ้าไทลื้อ',  t:'ศิลปะ',  l:'น่าน',            bg:'#F3E8FF',bc:'#D8B4FE',bs:'#D8B4FE', d:'ชุมชนภูมิปัญญาการทอผ้า หาทางสืบทอดให้คนรุ่นใหม่'},
+  ]
+};
+
+const OPT_TXT = {
+  A:'A. แยกต้นทุนคงที่ (Fixed) vs ต้นทุนผันแปร (Variable)',
+  B:'B. รวมรายได้ vs ค่าใช้จ่ายทั้งหมดเป็นกลุ่มเดียว',
+  C:'C. เปรียบเทียบกับรายได้เดือนเดียวกันปีที่แล้ว',
+  D:'D. คำนวณต้นทุนต่อแก้วแล้วหา Breakeven',
+};
+
+function goTo(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(id==='s4') fillTrace();
+}
+
+function pickTrack(t){
+  ST.track=t; ST.entity=null;
+  const d = DATA[t];
+  const label = t==='sme'?'SME Track':'Community Track';
+  document.getElementById('s1-chip').textContent = label;
+  document.getElementById('s1-title').textContent = t==='sme'?'เลือก SME ที่อยากช่วย':'เลือกชุมชนที่อยากช่วย';
+  document.getElementById('sl1').textContent = t==='sme'?'เลือก SME':'เลือกชุมชน';
+  document.getElementById('s1-next').disabled = true;
+  buildGrid(d);
+  goTo('s1');
+}
+
+function buildGrid(items){
+  const g = document.getElementById('entity-grid');
+  g.innerHTML='';
+  const noReduce = !window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  items.forEach((it,i)=>{
+    const c = document.createElement('div');
+    c.className='card card-sel entity-card';
+    c.tabIndex=0;
+    c.innerHTML=`
+      <div class="entity-head">
+        <div class="entity-ico" style="background:${it.bg};border-color:${it.bc};box-shadow:3px 3px 0 0 ${it.bs}">${it.e}</div>
+        <div class="entity-body">
+          <div class="entity-name">${it.n}</div>
+          <div class="entity-loc">${it.l}</div>
+        </div>
+      </div>
+      <p class="entity-desc">${it.d}</p>
+      <span class="pill pill-green">${it.t}</span>`;
+    c.onclick=()=>pickEntity(c,it);
+    c.onkeydown=e=>{if(e.key==='Enter')pickEntity(c,it)};
+    g.appendChild(c);
+    if(noReduce){
+      c.style.cssText='opacity:0;transform:translateY(16px) scale(.96)';
+      setTimeout(()=>{c.style.transition='opacity .35s ease,transform .35s cubic-bezier(.34,1.56,.64,1),box-shadow .18s,border-color .18s';c.style.cssText=''},i*65);
+    }
+  });
+}
+
+function pickEntity(card,it){
+  document.querySelectorAll('#entity-grid .card').forEach(c=>c.classList.remove('selected'));
+  card.classList.add('selected');
+  ST.entity=it;
+  document.getElementById('s1-next').disabled=false;
+  const ico = document.getElementById('s2-ico');
+  ico.textContent=it.e;
+  ico.style.background=it.bg;
+  ico.style.borderColor=it.bc;
+  ico.style.boxShadow=`3px 3px 0 0 ${it.bs}`;
+  document.getElementById('s2-name').textContent=it.n;
+}
+
+function tab(name,btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+}
+
+let done=1;
+function markLesson(el){
+  if(el.classList.contains('done'))return;
+  el.classList.add('done');
+  el.querySelector('.lesson-ico').innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg>';
+  el.querySelector('.pill').className='pill pill-green';
+  el.querySelector('.pill').textContent='เสร็จ';
+  done=Math.min(3,done+1);
+  document.getElementById('prog').style.width=Math.round(done/3*100)+'%';
+  document.getElementById('prog-lbl').textContent=done+'/3';
+}
+
+function pickOpt(btn,letter){
+  document.querySelectorAll('.opt').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  ST.opt=letter;
+  document.getElementById('s3-btn').disabled=false;
+}
+
+function upChar(){
+  const v=document.getElementById('just').value;
+  ST.just=v;
+  document.getElementById('char-ct').textContent=v.length+' / 200';
+}
+
+let step2=false;
+function submit3(){
+  if(!step2){
+    document.getElementById('fb').classList.add('vis');
+    document.getElementById('reflect').style.display='block';
+    document.getElementById('s3-btn').textContent='บันทึก Trace →';
+    step2=true;
+    document.getElementById('reflect').scrollIntoView({behavior:'smooth',block:'nearest'});
+  } else {
+    ST.reflect=document.getElementById('reflect-txt').value;
+    step2=false;
+    goTo('s4');
+  }
+}
+
+function fillTrace(){
+  const e=ST.entity;
+  document.getElementById('t-meta').textContent=e?`${e.n} · ${e.t} · ${e.l}`:'—';
+  document.getElementById('t-choice').textContent=ST.opt?OPT_TXT[ST.opt]:'—';
+  document.getElementById('t-just').textContent=ST.just||'(ไม่ได้ให้เหตุผล)';
+  document.getElementById('t-reflect').textContent=ST.reflect||'(ยังไม่ได้เขียน)';
+}
+</script>
+</body>
+</html>
