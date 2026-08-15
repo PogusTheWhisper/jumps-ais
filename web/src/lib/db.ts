@@ -13,18 +13,21 @@ export interface Attempt {
   created_at: string
 }
 
-// In-memory fallback — use globalThis singleton so dev hot-reload and
-// different Next.js module instances share the same Map
+function getRedis() {
+  const url = process.env.KV_REST_API_URL
+  const token = process.env.KV_REST_API_TOKEN
+  if (!url || !token) return null
+  const { Redis } = require('@upstash/redis')
+  return new Redis({ url, token })
+}
+
+// In-memory fallback for local dev without KV
 declare global {
   // eslint-disable-next-line no-var
   var _thaiternMem: Map<string, Attempt> | undefined
 }
 if (!global._thaiternMem) global._thaiternMem = new Map()
 const mem = global._thaiternMem
-
-function usePostgres() {
-  return !!process.env.POSTGRES_URL
-}
 
 export async function saveAttempt(data: {
   track: string
@@ -36,19 +39,8 @@ export async function saveAttempt(data: {
   justification: string | null
   reflection: string | null
 }): Promise<string> {
-  if (usePostgres()) {
-    const { sql } = await import('@vercel/postgres')
-    const { rows } = await sql`
-      INSERT INTO attempts (track, entity_id, entity_name, entity_type, entity_loc, option_selected, justification, reflection)
-      VALUES (${data.track}, ${data.entityId}, ${data.entityName}, ${data.entityType}, ${data.entityLoc},
-              ${data.optionSelected}, ${data.justification}, ${data.reflection})
-      RETURNING id
-    `
-    return rows[0].id as string
-  }
-
   const id = crypto.randomUUID()
-  mem.set(id, {
+  const attempt: Attempt = {
     id,
     track: data.track,
     entity_id: data.entityId,
@@ -59,34 +51,23 @@ export async function saveAttempt(data: {
     justification: data.justification,
     reflection: data.reflection,
     created_at: new Date().toISOString(),
-  })
+  }
+
+  const redis = getRedis()
+  if (redis) {
+    await redis.set(`attempt:${id}`, JSON.stringify(attempt), { ex: 60 * 60 * 24 * 30 })
+  } else {
+    mem.set(id, attempt)
+  }
   return id
 }
 
 export async function getAttempt(id: string): Promise<Attempt | null> {
-  if (usePostgres()) {
-    const { sql } = await import('@vercel/postgres')
-    const { rows } = await sql`SELECT * FROM attempts WHERE id = ${id}`
-    return (rows[0] as Attempt) ?? null
+  const redis = getRedis()
+  if (redis) {
+    const raw = await redis.get(`attempt:${id}`)
+    if (!raw) return null
+    return typeof raw === 'string' ? JSON.parse(raw) : raw
   }
   return mem.get(id) ?? null
-}
-
-export async function initDb() {
-  if (!usePostgres()) return
-  const { sql } = await import('@vercel/postgres')
-  await sql`
-    CREATE TABLE IF NOT EXISTS attempts (
-      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-      track TEXT NOT NULL,
-      entity_id TEXT NOT NULL,
-      entity_name TEXT NOT NULL,
-      entity_type TEXT NOT NULL,
-      entity_loc TEXT NOT NULL,
-      option_selected TEXT,
-      justification TEXT,
-      reflection TEXT,
-      created_at TIMESTAMPTZ DEFAULT NOW()
-    )
-  `
 }
