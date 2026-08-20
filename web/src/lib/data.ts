@@ -25,6 +25,40 @@ export const DATA: Record<Track, Entity[]> = {
   ],
 }
 
+// Stage 0 — SME category tree (closed enums, feeds problem-scoping). P-E3.
+export const CATEGORIES = {
+  food: {
+    label: 'Food & Beverage',
+    e: '🍜',
+    subs: [
+      { id: 'processed', label: 'Processed Food & Snacks' },
+      { id: 'beverages', label: 'Beverages & Ingredients' },
+      { id: 'outlets', label: 'F&B Outlets & Catering' },
+    ],
+  },
+  products: {
+    label: 'Non-Food Products',
+    e: '🛍️',
+    subs: [
+      { id: 'fashion', label: 'Fashion & Lifestyle' },
+      { id: 'beauty', label: 'Beauty & Personal Care' },
+      { id: 'industrial', label: 'Industrial & Construction Goods' },
+    ],
+  },
+  services: {
+    label: 'Non-Food Services',
+    e: '🛠️',
+    subs: [
+      { id: 'wellness', label: 'Wellness & Lifestyle Services' },
+      { id: 'tourism', label: 'Tourism & Hospitality' },
+      { id: 'repair', label: 'Maintenance & Repair' },
+      { id: 'professional', label: 'Professional Services' },
+    ],
+  },
+} as const
+
+export type CategoryKey = keyof typeof CATEGORIES
+
 export const OPTS = {
   A: 'A. แยกต้นทุนคงที่ (Fixed) vs ต้นทุนผันแปร (Variable)',
   B: 'B. รวมรายได้ vs ค่าใช้จ่ายทั้งหมดเป็นกลุ่มเดียว',

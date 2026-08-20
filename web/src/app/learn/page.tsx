@@ -15,7 +15,8 @@ function LearnContent() {
   const params = useSearchParams()
   const router = useRouter()
   const [done, setDone] = useState<Set<string>>(new Set(['l1']))
-  const [activeTab, setActiveTab] = useState<'textbook' | 'cases' | 'session'>('textbook')
+  const [activeTab, setActiveTab] = useState<'textbook' | 'quiz' | 'cases' | 'session'>('textbook')
+  const [quizPick, setQuizPick] = useState<number | null>(null)
 
   const entityName = params.get('entityName') ?? '—'
   const entityEmoji = params.get('entityEmoji') ?? '🏪'
@@ -25,22 +26,15 @@ function LearnContent() {
   const pct = Math.round((done.size / LESSONS.length) * 100)
 
   function handleNext() {
-    const q = new URLSearchParams({
-      track: params.get('track') ?? 'sme',
-      entityId: params.get('entityId') ?? '',
-      entityName: params.get('entityName') ?? '',
-      entityType: params.get('entityType') ?? '',
-      entityLoc: params.get('entityLoc') ?? '',
-    })
-    router.push('/decision?' + q.toString())
+    router.push('/case?track=' + (params.get('track') ?? 'sme'))
   }
 
   return (
     <div style={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column' }} className="animate-fade-up">
       <Topbar chip="ขั้นที่ 2 · เรียนรู้" />
 
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }} className="max-w-3xl mx-auto w-full px-7 py-5">
-        <Steps current={2} />
+      <div className="stage-body">
+        <Steps current={3} />
 
         {/* Entity header */}
         <div className="card flex items-center gap-4 p-4 mb-6">
@@ -64,7 +58,7 @@ function LearnContent() {
 
         {/* Tabs */}
         <div className="flex gap-2 mb-5 flex-wrap">
-          {(['textbook', 'cases', 'session'] as const).map((tab) => (
+          {(['textbook', 'quiz', 'cases', 'session'] as const).map((tab) => (
             <button key={tab} type="button" onClick={() => setActiveTab(tab)}
               className={[
                 'px-4 py-2.5 rounded-xl border-[2.5px] text-xs font-bold transition-all',
@@ -72,7 +66,7 @@ function LearnContent() {
                   ? 'bg-[#1C2833] text-white border-[#1C2833] shadow-[3px_3px_0_0_#000]'
                   : 'bg-white text-[#4F5A5D] border-[#E5E5E5] shadow-[3px_3px_0_0_#D0D0D0] hover:border-[#73C23A] hover:text-[#3A7A1A]',
               ].join(' ')}>
-              {tab === 'textbook' ? '📖 Textbook' : tab === 'cases' ? '🗂 Cases' : '🎥 Special Session'}
+              {tab === 'textbook' ? '📖 Textbook' : tab === 'quiz' ? '✏️ Quiz' : tab === 'cases' ? '🗂 Cases' : '🎥 Special Session'}
             </button>
           ))}
         </div>
@@ -101,6 +95,56 @@ function LearnContent() {
                 </div>
               )
             })}
+          </div>
+        )}
+
+        {activeTab === 'quiz' && (
+          <div className="animate-fade-up">
+            <div className="card overflow-hidden">
+              <div className="px-5 py-3.5 bg-[#1C2833] text-white flex items-center gap-2">
+                <span className="text-lg">✏️</span>
+                <span className="font-extrabold text-sm">Quiz · บทที่ 1</span>
+                <span className="pill pill-gray ml-auto text-[10px]">AI สร้างจากทฤษฎี</span>
+              </div>
+              <div className="p-5">
+                <p className="text-sm font-bold text-[#1C2833] mb-4">
+                  ร้านมีค่าเช่า 38,000 ฿/เดือน — จัดเป็นต้นทุนประเภทใด?
+                </p>
+                <div className="space-y-2.5">
+                  {['ต้นทุนคงที่ (Fixed)', 'ต้นทุนผันแปร (Variable)', 'ต้นทุนจม (Sunk)', 'ไม่ใช่ต้นทุน'].map((opt, i) => {
+                    const picked = quizPick === i
+                    const correct = i === 0
+                    const show = quizPick !== null
+                    return (
+                      <button key={i} type="button" disabled={show} onClick={() => setQuizPick(i)}
+                        className={[
+                          'w-full flex items-center gap-3 px-4 py-3.5 rounded-xl border-[2.5px] text-left text-sm font-medium transition-all',
+                          show && correct ? 'border-[#73C23A] bg-[#F8FFF0] shadow-[3px_3px_0_0_#3A7A1A]'
+                            : show && picked && !correct ? 'border-[#FF4B4B] bg-[#FFF5F5] shadow-[3px_3px_0_0_#C81E1E]'
+                            : picked ? 'border-[#73C23A] bg-[#F8FFF0]'
+                            : 'border-[#E5E5E5] bg-white hover:border-[#73C23A] shadow-[3px_3px_0_0_#D0D0D0]',
+                        ].join(' ')}>
+                        <span className="text-[#1C2833]">{opt}</span>
+                        {show && correct && <span className="ml-auto text-[#3A7A1A]">✓</span>}
+                        {show && picked && !correct && <span className="ml-auto text-[#FF4B4B]">✗</span>}
+                      </button>
+                    )
+                  })}
+                </div>
+                {quizPick !== null && (
+                  <div className="mt-4 p-4 rounded-xl bg-[#F8FFF0] border-2 border-[#A8D878] animate-spring-in">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className={`pill ${quizPick === 0 ? 'pill-green' : 'pill-blue'}`}>{quizPick === 0 ? 'EXCEEDS' : 'MEETS'}</span>
+                      <span className="text-xs font-bold text-[#1C2833]">แถบผล — ไม่มีคะแนน</span>
+                    </div>
+                    <p className="text-xs text-[#4F5A5D] leading-relaxed">
+                      ค่าเช่าไม่เปลี่ยนตามยอดขาย = ต้นทุนคงที่ ตัวเลขนี้คือฐานของ Breakeven
+                    </p>
+                    <button type="button" onClick={() => setQuizPick(null)} className="btn-secondary text-xs mt-3">ลองใหม่</button>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         )}
 

@@ -46,7 +46,7 @@ export default function Home() {
             </p>
 
             {/* CTA — full width of left column */}
-            <Link href="/select?track=sme" className="btn-primary" style={{ display: 'block', textAlign: 'center', marginBottom: 'clamp(16px, 2.5vh, 24px)', fontSize: 'clamp(0.95rem, 2vw, 1.1rem)' }}>
+            <Link href="/intake?track=sme" className="btn-primary" style={{ display: 'block', textAlign: 'center', marginBottom: 'clamp(16px, 2.5vh, 24px)', fontSize: 'clamp(0.95rem, 2vw, 1.1rem)' }}>
               เริ่มเลย! →
             </Link>
 
@@ -68,7 +68,7 @@ export default function Home() {
 
           {/* Right: track cards — full height */}
           <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 'clamp(12px, 2vh, 18px)' }}>
-            <Link href="/select?track=sme"
+            <Link href="/intake?track=sme"
               className="card card-hover card-sel animate-spring-in"
               style={{ display: 'flex', flexDirection: 'column', gap: 14, padding: 'clamp(16px, 3vh, 24px)', cursor: 'pointer', animationDelay: '80ms' }}>
               <div style={{ background: 'linear-gradient(135deg, #FEF3C7, #FDE68A)', borderRadius: 14, padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -89,7 +89,7 @@ export default function Home() {
               <span className="pill pill-green" style={{ width: 'fit-content' }}>ธุรกิจ / บริหาร</span>
             </Link>
 
-            <Link href="/select?track=community"
+            <Link href="/intake?track=community"
               className="card card-hover card-sel animate-spring-in"
               style={{ display: 'flex', flexDirection: 'column', gap: 14, padding: 'clamp(16px, 3vh, 24px)', cursor: 'pointer', animationDelay: '160ms' }}>
               <div style={{ background: 'linear-gradient(135deg, #EEF2FF, #C7D2FE)', borderRadius: 14, padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>

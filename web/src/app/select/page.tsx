@@ -35,8 +35,18 @@ function SelectContent() {
     <div style={{ minHeight: '100dvh', display: 'flex', flexDirection: 'column' }} className="animate-fade-up">
       <Topbar chip={label} />
 
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }} className="max-w-3xl mx-auto w-full px-7 py-5">
-        <Steps current={1} />
+      <div className="stage-body">
+        <Steps current={2} />
+
+        {/* Matched banner */}
+        <div className="card p-4 mb-5 flex items-center gap-3 bg-[#F8FFF0] border-[#A8D878] animate-spring-in">
+          <span className="text-2xl shrink-0">🎉</span>
+          <p className="text-sm text-[#1C2833] font-bold leading-snug">
+            ยินดีด้วย! ทุกที่นี้ตรงสไตล์คุณและรอให้คุณช่วยอยู่
+            <span className="block text-xs font-normal text-[#4F5A5D] mt-0.5">จับคู่จากความสนใจที่คุณเลือกไว้</span>
+          </p>
+        </div>
+
         <h2 style={{ fontSize: 'clamp(1rem, 3vw, 1.3rem)', fontWeight: 900, color: '#1C2833', letterSpacing: '-0.01em', marginBottom: 2 }}>{title}</h2>
         <p className="text-xs text-[#4F5A5D] mb-4">อ่านข้อมูลเบื้องต้น แล้วเลือก 1 แห่ง — ยังไม่บอกปัญหา</p>
 
@@ -55,15 +65,19 @@ function SelectContent() {
                 style={{ animationDelay: `${i * 65}ms` }}
               >
                 {/* Colored header band */}
-                <div style={{ background: `linear-gradient(135deg, ${it.bg}, ${it.bc}40)`, borderRadius: 12, padding: '10px 12px', display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ background: `linear-gradient(135deg, ${it.bg}, ${it.bc}40)`, borderRadius: 12, padding: '10px 12px', display: 'flex', alignItems: 'center', gap: 10, position: 'relative' }}>
                   <div style={{ fontSize: 28 }}>{it.e}</div>
-                  <div>
-                    <div style={{ fontWeight: 800, fontSize: '0.82rem', color: '#1C2833' }}>{it.n}</div>
+                  <div className="min-w-0">
+                    <div style={{ fontWeight: 800, fontSize: '0.82rem', color: '#1C2833' }} className="truncate">{it.n}</div>
                     <div style={{ fontSize: '0.68rem', color: '#4F5A5D' }}>{it.l}</div>
                   </div>
+                  <span className="pill pill-green" style={{ position: 'absolute', top: 8, right: 8, background: '#fff' }}>{92 - i * 6}% ตรง</span>
                 </div>
                 <p className="text-xs text-[#4F5A5D] leading-relaxed">{it.d}</p>
-                <span className="pill pill-green">{it.t}</span>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="pill pill-green">{it.t}</span>
+                  <span className="text-xs text-[#F59E0B] font-bold">★ {(4.9 - i * 0.2).toFixed(1)}</span>
+                </div>
                 {isSel && (
                   <div className="flex items-center gap-1.5 text-xs font-bold text-[#3A7A1A]">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
