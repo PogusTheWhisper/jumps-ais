@@ -14,7 +14,7 @@ export default function Home() {
         <div aria-hidden="true" style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle, #73C23A 1px, transparent 1px)', backgroundSize: '28px 28px', opacity: 0.06, pointerEvents: 'none', zIndex: 0 }} />
 
         {/* Two-column layout on desktop */}
-        <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: 1100, margin: '0 auto', padding: 'clamp(24px, 5vw, 48px) clamp(20px, 5vw, 60px)', display: 'flex', gap: 'clamp(24px, 5vw, 60px)', alignItems: 'center' }}>
+        <div className="home-layout" style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: 1100, margin: '0 auto', padding: 'clamp(24px, 5vw, 48px) clamp(20px, 5vw, 60px)', display: 'flex', gap: 'clamp(24px, 5vw, 60px)', alignItems: 'center' }}>
 
           {/* Left: text + CTA */}
           <div style={{ flex: 1, minWidth: 0 }}>
@@ -67,7 +67,7 @@ export default function Home() {
           </div>
 
           {/* Right: track cards — full height */}
-          <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 'clamp(12px, 2vh, 18px)' }}>
+          <div className="home-right" style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 'clamp(12px, 2vh, 18px)' }}>
             <Link href="/intake?track=sme"
               className="card card-hover card-sel animate-spring-in"
               style={{ display: 'flex', flexDirection: 'column', gap: 14, padding: 'clamp(16px, 3vh, 24px)', cursor: 'pointer', animationDelay: '80ms' }}>
@@ -114,9 +114,9 @@ export default function Home() {
 
         {/* Mobile: stack vertically */}
         <style>{`
-          @media (max-width: 640px) {
+          @media (max-width: 860px) {
             .home-layout { flex-direction: column !important; }
-            .home-right { order: -1; }
+            .home-right { width: 100%; }
           }
         `}</style>
       </main>

@@ -62,7 +62,7 @@ function CaseContent() {
                   inputMode="numeric"
                   maxLength={1}
                   className={[
-                    'w-16 h-20 text-center text-3xl font-black rounded-2xl border-[3px] bg-white text-[#1C2833] outline-none transition-all',
+                    'w-12 h-16 sm:w-16 sm:h-20 text-center text-2xl sm:text-3xl font-black rounded-2xl border-[3px] bg-white text-[#1C2833] outline-none transition-all',
                     error ? 'border-[#FF4B4B] shadow-[0_4px_0_0_#C81E1E] animate-wiggle'
                       : d ? 'border-[#73C23A] shadow-[0_4px_0_0_#3A7A1A]'
                       : 'border-[#E5E5E5] shadow-[0_4px_0_0_#D0D0D0] focus:border-[#73C23A] focus:shadow-[0_4px_0_0_#3A7A1A]',

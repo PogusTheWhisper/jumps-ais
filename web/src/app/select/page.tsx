@@ -50,7 +50,7 @@ function SelectContent() {
         <h2 style={{ fontSize: 'clamp(1rem, 3vw, 1.3rem)', fontWeight: 900, color: '#1C2833', letterSpacing: '-0.01em', marginBottom: 2 }}>{title}</h2>
         <p className="text-xs text-[#4F5A5D] mb-4">อ่านข้อมูลเบื้องต้น แล้วเลือก 1 แห่ง — ยังไม่บอกปัญหา</p>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {entities.map((it, i) => {
             const isSel = selected?.id === it.id
             return (
