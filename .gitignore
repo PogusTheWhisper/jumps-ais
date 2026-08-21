@@ -8,9 +8,9 @@ node_modules/
 .npm
 
 # Next.js
-web/.next/
-web/out/
-web/.vercel/
+.next/
+out/
+.vercel/
 
 # Environment
 .env
